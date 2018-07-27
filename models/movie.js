@@ -9,7 +9,7 @@ const Movie = mongoose.model(
     title: {
       type: String,
       required: true,
-      trim: true,
+      trim: true, // get rid of padding
       minlength: 5,
       maxlength: 255
     },
@@ -33,6 +33,8 @@ const Movie = mongoose.model(
 );
 
 // Joi returns either result or error
+// Mongoose schema can grow independent of the mongoose Schema
+// Joi = client input ; Mongoose = whole object
 function validateMovie(movie) {
   // Validate Course
   const schema = {
@@ -40,7 +42,7 @@ function validateMovie(movie) {
       .min(5)
       .max(50)
       .required(),
-    genreId: Joi.string().required(),
+    genreId: Joi.string().required(), // client should send only genre ID
     numberInStock: Joi.number()
       .min(0)
       .required(),

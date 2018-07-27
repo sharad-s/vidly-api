@@ -1,5 +1,5 @@
 /*
-  Route: /api/customers
+  Route: /api/movies
 
 */
 const { Movie, validate } = require("../models/movie");

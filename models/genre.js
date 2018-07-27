@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+// Schema can be re-used in multiple place
 const genreSchema = new mongoose.Schema({
   name: {
     type: String,
