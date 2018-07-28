@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
   // Create new movie object
   // Selectively choose which properties of the client object to add to the database
   // Hybrid Approach to referencing genre
-  let movie = new Movie({
+  const movie = new Movie({
     title: req.body.title,
     genre: {
       _id: genre._id,
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
   });
 
   // Save genre object to DB
-  movie = await movie.save();
+  await movie.save();
   res.send(movie);
 });
 

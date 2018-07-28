@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
+// Joi input validation - add ObjectId validation
+const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
+
 // Custom middleware
 const logger = require("./middleware/logger");
 
@@ -34,7 +38,7 @@ app.use(logger);
 // Development Middleware
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
-  startupDebugger("Morgan enabled...");
+  startupDebugger("Morgan enabled... Requests will be logged.");
 }
 
 // // Log Config Variables

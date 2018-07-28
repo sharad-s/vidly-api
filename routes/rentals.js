@@ -5,11 +5,15 @@
 
 const { Rental, validate } = require("../models/rental");
 const { Movie } = require("../models/movie");
+const { Customer } = require("../models/customer");
 const { Genre } = require("../models/genre");
 
 const express = require("express");
 const mongoose = require("mongoose");
+const Fawn = require("fawn");
 const router = express.Router();
+
+Fawn.init(mongoose);
 
 // GET all genres
 router.get("/", async (req, res) => {
@@ -56,13 +60,30 @@ router.post("/", async (req, res) => {
     },
     movie: {
       _id: movie._id,
-      title: movie.title
+      title: movie.title,
+      dailyRentalRate: movie.dailyRentalRate
     }
   });
 
-  // Save genre object to DB
-  movie = await movie.save();
-  res.send(movie);
+  // Fawn takes in a collection named in the db, then the object to be saved
+  // Fawn is good for two-phase commits to the DB
+  try {
+    new Fawn.Task()
+      .save("rentals", rental)
+      .update(
+        "movies",
+        { _id: movie._id },
+        {
+          $inc: { numberInStock: -1 }
+        }
+      )
+      // .remove()
+      .run();
+
+    res.send(rental);
+  } catch (ex) {
+    res.status(500).send("Something failed.");
+  }
 });
 
 module.exports = router;

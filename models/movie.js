@@ -42,7 +42,7 @@ function validateMovie(movie) {
       .min(5)
       .max(50)
       .required(),
-    genreId: Joi.string().required(), // client should send only genre ID
+    genreId: Joi.objectId().required(), // client should send only genre ID
     numberInStock: Joi.number()
       .min(0)
       .required(),

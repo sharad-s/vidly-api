@@ -34,10 +34,10 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   // Create new genre object
-  let genre = new Genre({ name: req.body.name });
+  const genre = new Genre({ name: req.body.name });
 
   // Save genre object to DB
-  genre = await genre.save();
+  await genre.save();
   res.send(genre);
 });
 
