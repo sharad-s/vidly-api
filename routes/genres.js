@@ -8,8 +8,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
 
-// GET all genres
+// Middleware
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
+// @route   GET api/genres
+// @desc    Get genres
+// @access  Public
 router.get("/", async (req, res) => {
+  throw new Error("Could not get the genres.");
   const genres = await Genre.find().sort("name");
   res.send(genres);
 });
@@ -20,13 +27,13 @@ router.get("/:id", async (req, res) => {
     // Find genre by id
     const genre = await Genre.findById(req.params.id);
     res.send(genre);
-  } catch (err) {
+  } catch (ex) {
     return res.status(404).send("The genre with the given ID was not found.");
   }
 });
 
 // POST new genre
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   // Validate course
   const { error } = validate(req.body);
 
@@ -63,7 +70,7 @@ router.put("/:id", async (req, res) => {
   res.send(genre);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   const genre = await Genre.findByIdAndRemove(req.params.id);
 
   // If course not found - return return 404

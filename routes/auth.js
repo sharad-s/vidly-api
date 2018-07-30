@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
   // Generate jwt
   const token = user.generateAuthToken();
 
-  res.header('x-auth-token', token).send(token);
+  res.header("x-auth-token", token).send(token);
 });
 
 // Custom validation for client auth input

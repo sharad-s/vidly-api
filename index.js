@@ -1,15 +1,31 @@
+// Direct Imports
+require("express-async-errors");
+
 const config = require("config");
 const express = require("express");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const winston = require("winston"); // Logging library
+require("winston-mongodb");
 
 // Joi input validation - add ObjectId validation
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
+// Winston transports
+winston.add(winston.transports.File, {
+  filename: "logfile.log",
+  level: "silly"
+});
+winston.add(winston.transports.MongoDB, {
+  db: "mongodb://localhost/vidly",
+  level: "error"
+});
+
 // Custom middleware
 const logger = require("./middleware/logger");
+const error = require("./middleware/error");
 
 // Import Routes
 const home = require("./routes/home");
@@ -25,6 +41,15 @@ const startupDebugger = require("debug")("app:startup");
 
 // Instantiate express
 const app = express();
+
+// Node process Error logger
+winston.handleExceptions(
+  new winston.transports.File({ filename: "uncaughtExceptions.log" })
+);
+
+process.on("unhandledRejection", ex => {
+  throw ex;
+});
 
 // Check for jwtPrivateKey
 if (!config.get("jwtPrivateKey")) {
@@ -62,6 +87,8 @@ app.use("/api/movies", movies);
 app.use("/api/rentals", rentals);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
+
+app.use(error);
 
 // PORT
 const port = process.env.PORT || 5000;

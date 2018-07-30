@@ -8,6 +8,7 @@
     "config": "^1.31.0",
     "debug": "^3.1.0",
     "express": "^4.16.3",
+    "express-async-errors": "^3.0.0",
     "fawn": "^2.1.5",
     "helmet": "^3.12.1",
     "joi": "^13.4.0",
@@ -18,7 +19,9 @@
     "morgan": "^1.9.0",
     "nodemon": "^1.17.5",
     "pug": "^2.0.3",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "winston": "^2.4.3",
+    "winston-mongodb": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
