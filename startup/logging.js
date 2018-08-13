@@ -1,5 +1,5 @@
 const winston = require("winston"); // Logging library
-require("winston-mongodb");
+// require("winston-mongodb");
 require("express-async-errors");
 
 module.exports = function() {
@@ -7,9 +7,9 @@ module.exports = function() {
   winston.add(winston.transports.File, {
     filename: "./logs/logfile.log"
   });
-  winston.add(winston.transports.MongoDB, {
-    db: "mongodb://localhost/vidly"
-  });
+  // winston.add(winston.transports.MongoDB, {
+  //   db: "mongodb://localhost/vidly"
+  // });
 
   // Winston Error Logging for all node processes
   winston.handleExceptions(
