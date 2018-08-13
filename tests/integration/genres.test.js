@@ -1,5 +1,7 @@
 const request = require("supertest");
 const { Genre } = require("../../models/genre");
+const { User } = require("../../models/user");
+
 let server;
 
 describe("/api/genres", () => {
@@ -44,4 +46,57 @@ describe("/api/genres", () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe("POST /", async () => {
+    let token;
+    let name;
+
+    // Standard code for making a POST request
+    const exec = async () => {
+      return await request(server)
+        .post("/api/genres/")
+        .set("x-auth-token", token)
+        .send({ name });
+    }
+
+    // Happy Path
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+      name = "genre1";
+    })
+
+    it("should return 401 if client is not logged in", async () => {
+      token = '';
+      const res = await exec();
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 400 if genre is less than 5 characters", async () => {
+      name = "123";
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    it("should return 400 if genre is more than 50 characters", async () => {
+      name = new Array(60).join('a')
+      const res = await exec();
+      expect(res.status).toBe(400);
+    });
+
+    // Happy Path
+    it("should save the genre if it is valid", async () => {
+      exec();
+      const genre = await Genre.find({ name: 'genre1' })
+      expect(genre).not.toBeNull();
+    });
+    
+    // Happy Path
+    it("should return the genre in the response if valid", async () => {
+      const res = await exec();
+      expect(res.body).toHaveProperty('_id')
+      expect(res.body).toHaveProperty('name', 'genre1')
+    });
+
+  });
+
 });
