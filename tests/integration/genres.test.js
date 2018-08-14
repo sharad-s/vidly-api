@@ -10,7 +10,7 @@ describe("/api/genres", () => {
   });
 
   afterEach(async () => {
-    server.close();
+    await server.close();
     await Genre.remove({});
   });
 
@@ -89,7 +89,7 @@ describe("/api/genres", () => {
       const genre = await Genre.find({ name: 'genre1' })
       expect(genre).not.toBeNull();
     });
-    
+
     // Happy Path
     it("should return the genre in the response if valid", async () => {
       const res = await exec();
